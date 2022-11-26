@@ -6,7 +6,7 @@ cd "`dirname "$0"`/../.."
 
 cd ./docs
 rm -rf .git/
-PUBLISH_BRANCH="dist"
+PUBLISH_BRANCH="gh-pages"
 ORIGIN=`git remote get-url origin`
 AUTHOR="dist-publising robot <erosson+actions@users.noreply.github.com>"
 # BRANCH=`git branch --show-current`
