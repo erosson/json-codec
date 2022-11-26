@@ -16,5 +16,5 @@ jobs:
           node-version: 18.x
       - run: yarn --dev --frozen-lockfile
       - run: yarn build
-      - run: yarn publish:dist
+      # - run: yarn publish:dist
       - run: yarn publish:docs
