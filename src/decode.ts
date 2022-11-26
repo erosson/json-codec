@@ -7,7 +7,6 @@
  * https://guide.elm-lang.org/effects/json.html
  */
 import { Value } from './json'
-export { Value, JSON } from './json'
 
 type FieldError = { decodeError: 'field', path: (string | number)[], field: string, error: DecodeError }
 type IndexError = { decodeError: 'index', path: (string | number)[], index: number, error: DecodeError }

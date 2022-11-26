@@ -5,7 +5,6 @@
  * much smaller than the Elm equivalent.
  */
 import { Value } from './json'
-export { Value, JSON } from './json'
 
 /**
  * Decode a date as milliseconds since the unix epoch.
