@@ -35,6 +35,6 @@ git checkout -b "$PUBLISH_BRANCH"
 git add .
 git add dist -f
 git status
-git -c user.name="$NAME" -c user.email="$MAIL" commit -m 'automated dist update'
+git -c user.name="$NAME" -c user.email="$MAIL" commit --allow-empty -m 'automated dist update'
 git push origin "$PUBLISH_BRANCH"
 rm -rf .git/

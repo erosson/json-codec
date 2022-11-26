@@ -7,9 +7,10 @@ cd "`dirname "$0"`/../.."
 cd ./docs
 rm -rf .git/
 PUBLISH_BRANCH="gh-pages"
-ORIGIN=`git remote get-url origin`
+ORIGIN="${ORIGIN:-`git remote get-url origin`}"
 NAME="docs-publishing robot"
 MAIL="erosson+actions@users.noreply.github.com>"
+echo $ORIGIN
 # BRANCH=`git branch --show-current`
 git init
 git remote add origin "$ORIGIN"
