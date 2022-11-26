@@ -7,12 +7,14 @@ cd "`dirname "$0"`/../.."
 cd ./docs
 rm -rf .git/
 PUBLISH_BRANCH="gh-pages"
-ORIGIN=`git remote get-url origin`
-AUTHOR="dist-publising robot <erosson+actions@users.noreply.github.com>"
+ORIGIN="${ORIGIN:-`git remote get-url origin`}"
+NAME="docs-publishing robot"
+MAIL="erosson+actions@users.noreply.github.com>"
 # BRANCH=`git branch --show-current`
 git init
+git remote add origin "$ORIGIN"
 git checkout -b "$PUBLISH_BRANCH"
 git add .
-git commit -m 'automated docs update' --author "$AUTHOR"
-git push -f "$ORIGIN" "$PUBLISH_BRANCH"
+git -c user.name="$NAME" -c user.email="$MAIL" commit -m 'automated docs update'
+git push -f origin "$PUBLISH_BRANCH"
 rm -rf .git/

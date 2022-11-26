@@ -20,8 +20,9 @@ tar -xf ./build/dist.tar -C ./build/dist
 # Create a temporary git repository to publish the results.
 cd ./build/dist
 PUBLISH_BRANCH="dist"
-ORIGIN=`git remote get-url origin`
-AUTHOR="dist-publising robot <erosson+actions@users.noreply.github.com>"
+ORIGIN="${ORIGIN:-`git remote get-url origin`}"
+NAME="dist-publishing robot"
+MAIL="erosson+actions@users.noreply.github.com>"
 #BRANCH=`git branch --show-current`
 git init
 git remote add origin "$ORIGIN"
@@ -34,6 +35,6 @@ git checkout -b "$PUBLISH_BRANCH"
 git add .
 git add dist -f
 git status
-git commit -m 'automated dist update' --author "$AUTHOR"
+git -c user.name="$NAME" -c user.email="$MAIL" commit --allow-empty -m 'automated dist update'
 git push origin "$PUBLISH_BRANCH"
 rm -rf .git/
