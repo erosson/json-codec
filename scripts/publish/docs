@@ -15,5 +15,5 @@ git init
 git checkout -b "$PUBLISH_BRANCH"
 git add .
 git -c user.name="$NAME" -c user.email="$MAIL" commit -m 'automated docs update'
-git push -f "$ORIGIN" "$PUBLISH_BRANCH"
+git push -f origin "$PUBLISH_BRANCH"
 rm -rf .git/
