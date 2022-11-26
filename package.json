@@ -1,0 +1,38 @@
+{
+  "name": "@erosson/json-encode-decode",
+  "version": "1.0.0",
+  "description": "Elm-style JSON encoders and decoders for Typescript",
+  "source": "src/index.ts",
+  "main": "dist/main.js",
+  "module": "dist/module.js",
+  "types": "dist/types.d.ts",
+  "homepage": "https://erosson.github.io/json-encode-decode/",
+  "repository": "https://github.com/erosson/json-encode-decode.git",
+  "author": "Evan Rosson <github@erosson.org>",
+  "license": "MIT",
+  "scripts": {
+    "start": "concurrently -k \"yarn watch\" \"yarn serve\" \"yarn docs --watch\"",
+    "build": "yarn check && yarn test && yarn dist && yarn docs",
+    "check": "tsc --noEmit",
+    "watch": "parcel watch",
+    "dist": "parcel build",
+    "serve": "serve ./docs",
+    "docs": "typedoc",
+    "publish:docs": "./scripts/publish/docs",
+    "publish:dist": "./scripts/publish/dist",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@parcel/packager-ts": "2.8.0",
+    "@parcel/transformer-typescript-types": "2.8.0",
+    "@types/jest": "^29.2.3",
+    "concurrently": "^7.6.0",
+    "jest": "^29.3.1",
+    "jsdoc": "^4.0.0",
+    "parcel": "^2.8.0",
+    "serve": "^14.1.2",
+    "ts-jest": "^29.0.3",
+    "typedoc": "^0.23.21",
+    "typescript": "^4.9.3"
+  }
+}
