@@ -8,11 +8,12 @@ cd ./docs
 rm -rf .git/
 PUBLISH_BRANCH="gh-pages"
 ORIGIN=`git remote get-url origin`
-AUTHOR="dist-publising robot <erosson+actions@users.noreply.github.com>"
+USER="docs-publising robot"
+MAIL="erosson+actions@users.noreply.github.com>"
 # BRANCH=`git branch --show-current`
 git init
 git checkout -b "$PUBLISH_BRANCH"
 git add .
-git commit -m 'automated docs update' --author "$AUTHOR"
+git -c user.name="$NAME" -c user.email="$MAIL" commit -m 'automated docs update'
 git push -f "$ORIGIN" "$PUBLISH_BRANCH"
 rm -rf .git/
