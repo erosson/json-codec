@@ -21,7 +21,7 @@ tar -xf ./build/dist.tar -C ./build/dist
 cd ./build/dist
 PUBLISH_BRANCH="dist"
 ORIGIN=`git remote get-url origin`
-NAME="dist-publising robot"
+NAME="dist-publishing robot"
 MAIL="erosson+actions@users.noreply.github.com>"
 #BRANCH=`git branch --show-current`
 git init

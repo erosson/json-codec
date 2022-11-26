@@ -8,7 +8,7 @@ cd ./docs
 rm -rf .git/
 PUBLISH_BRANCH="gh-pages"
 ORIGIN=`git remote get-url origin`
-USER="docs-publising robot"
+NAME="docs-publishing robot"
 MAIL="erosson+actions@users.noreply.github.com>"
 # BRANCH=`git branch --show-current`
 git init
