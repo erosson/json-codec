@@ -1,7 +1,5 @@
 /**
  * Represents an undecoded, non-validated JSON value.
- * 
- * @alias JSON
  */
 export type Value
     = string
@@ -12,6 +10,6 @@ export type Value
     | { [k: string]: Value }
 
 /**
- * @alias Value
+ * @see Value
  */
 export type JSON = Value
