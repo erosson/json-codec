@@ -6,17 +6,20 @@
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
+  "homepage": "https://erosson.github.io/json-encode-decode/",
   "repository": "https://github.com/erosson/json-encode-decode.git",
   "author": "Evan Rosson <github@erosson.org>",
   "license": "MIT",
   "scripts": {
     "start": "concurrently -k \"yarn watch\" \"yarn serve\" \"yarn docs --watch\"",
-    "build": "yarn check && yarn dist && yarn docs",
+    "build": "yarn check && yarn test && yarn dist && yarn docs",
     "check": "tsc --noEmit",
     "watch": "parcel watch",
     "dist": "parcel build",
     "serve": "serve ./docs",
     "docs": "typedoc",
+    "publish:docs": "./scripts/publish/docs",
+    "publish:dist": "./scripts/publish/dist",
     "test": "jest"
   },
   "devDependencies": {
