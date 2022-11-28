@@ -1,6 +1,6 @@
 #!/bin/bash
 # publish documentation in `/docs/` to `gh-pages` branch
-# https://erosson.github.io/json-encode-decode/
+# https://erosson.github.io/json-codec/
 set -xeuo pipefail
 cd "`dirname "$0"`/../.."
 
