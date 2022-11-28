@@ -1,13 +1,13 @@
 {
-  "name": "@erosson/json-encode-decode",
+  "name": "@erosson/json-codec",
   "version": "1.0.0",
   "description": "Elm-style JSON encoders and decoders for Typescript",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "homepage": "https://erosson.github.io/json-encode-decode/",
-  "repository": "https://github.com/erosson/json-encode-decode.git",
+  "homepage": "https://erosson.github.io/json-codec/",
+  "repository": "https://github.com/erosson/json-codec.git",
   "author": "Evan Rosson <github@erosson.org>",
   "license": "MIT",
   "scripts": {
