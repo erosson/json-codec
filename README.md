@@ -1,4 +1,4 @@
-# json-encode-decode
+# json-codec
 Elm-style JSON encoders and decoders for Typescript
 
 Based on [Elm's JSON decoders](https://package.elm-lang.org/packages/elm/json/latest/)
