@@ -7,6 +7,7 @@
  * https://guide.elm-lang.org/effects/json.html
  */
 import { Value } from './json'
+import * as R from './result'
 
 type FieldError = { decodeError: 'field', path: (string | number)[], field: string, error: DecodeError }
 type IndexError = { decodeError: 'index', path: (string | number)[], index: number, error: DecodeError }
@@ -20,38 +21,27 @@ type DecodeError
 
 const error = {
     field(field: string, error: DecodeError): DecodeErr {
-        return err({ decodeError: 'field', path: [], field, error })
+        return R.err({ decodeError: 'field', path: [], field, error })
     },
     index(index: number, error: DecodeError): DecodeErr {
-        return err({ decodeError: 'index', path: [], index, error })
+        return R.err({ decodeError: 'index', path: [], index, error })
     },
     oneOf(errors: DecodeError[]): DecodeErr {
-        return err({ decodeError: 'oneOf', path: [], errors })
+        return R.err({ decodeError: 'oneOf', path: [], errors })
     },
     failure(message: string, value: Value): DecodeErr {
-        return err({ decodeError: 'failure', path: [], message, value })
+        return R.err({ decodeError: 'failure', path: [], message, value })
     },
     expecting(type_: string, value: Value): DecodeErr {
-        return err({ decodeError: 'failure', path: [], message: `Expecting ${type_}`, value })
+        return R.err({ decodeError: 'failure', path: [], message: `Expecting ${type_}`, value })
     },
     missing(key: string | number, value: Value): DecodeErr {
-        return err({ decodeError: 'failure', path: [], message: `Missing key: ${JSON.stringify(key)}`, value })
+        return R.err({ decodeError: 'failure', path: [], message: `Missing key: ${JSON.stringify(key)}`, value })
     },
 }
 
-type Err<E> = { success: false, error: E }
-type Ok<V> = { success: true, value: V }
-type Result<E, V> = Err<E> | Ok<V>
-
-type DecodeErr = Err<DecodeError>
-type DecodeResult<V> = Result<DecodeError, V>
-
-function ok<V>(value: V): Ok<V> {
-    return { success: true, value }
-}
-function err(error: DecodeError): DecodeErr {
-    return { success: false, error }
-}
+type DecodeErr = R.Err<DecodeError>
+type DecodeResult<V> = R.Result<DecodeError, V>
 
 
 /**
@@ -126,7 +116,7 @@ export class Decoder<T> {
         return new Decoder((v) => {
             const resA = d.decoderFn(v)
             return resA.success
-                ? ok(fn(resA.value))
+                ? R.ok(fn(resA.value))
                 : resA
         })
     }
@@ -259,7 +249,7 @@ export class Decoder<T> {
                     const [index, e] = errs[0]
                     return error.index(index, e)
                 }
-                return ok(oks)
+                return R.ok(oks)
             }
             else {
                 return error.expecting('an ARRAY', v)
@@ -291,7 +281,7 @@ export class Decoder<T> {
                     const [key, e] = errs[0]
                     return error.field(key, e)
                 }
-                return ok(oks)
+                return R.ok(oks)
             }
             return error.expecting('an OBJECT', v)
         })
@@ -311,7 +301,7 @@ export class Decoder<T> {
         const d = this
         return new Decoder(function dict(v) {
             const entries = d.keyValuePairs().decoderFn(v)
-            return entries.success ? ok(Object.fromEntries(entries.value)) : entries
+            return entries.success ? R.ok(Object.fromEntries(entries.value)) : entries
         })
     }
 
@@ -445,7 +435,7 @@ export class Decoder<T> {
 export const string = new Decoder<string>(
     function string(v) {
         if (typeof v === "string") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a STRING', v)
     })
@@ -463,7 +453,7 @@ export const string = new Decoder<string>(
 export const number = new Decoder<number>(
     function number(v) {
         if (typeof v === "number") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a NUMBER', v)
     })
@@ -481,7 +471,7 @@ export const number = new Decoder<number>(
 export const boolean = new Decoder<boolean>(
     function boolean(v) {
         if (typeof v === "boolean") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a BOOLEAN', v)
     })
@@ -499,7 +489,7 @@ export const boolean = new Decoder<boolean>(
 export const null_ = new Decoder<null>(
     function null_(v) {
         if (v === null) {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a NULL', v)
     })
@@ -519,7 +509,7 @@ export function nullAs<T>(default_: T): Decoder<T> {
  * Value. This can be useful if you have particularly complex data that you
  * would like to deal with later, or if you do not care about its structure.
  */
-export const value = new Decoder<Value>(ok)
+export const value = new Decoder<Value>(R.ok)
 
 /**
  * Try a bunch of different decoders.
@@ -570,7 +560,7 @@ function maybe<T>(decoder: Decoder<T>, default_?: any): Decoder<T | any> {
  * This is handy when used with oneOf or andThen.
  */
 export function succeed<T>(value: T): Decoder<T> {
-    return new Decoder(() => ok(value))
+    return new Decoder(() => R.ok(value))
 }
 
 /**
@@ -641,7 +631,7 @@ function combineTuple<O extends unknown[]>(decoders: DecoderTuple<O>): Decoder<O
         if (errs.length > 0) {
             return error.oneOf(errs)
         }
-        return ok(oks as O)
+        return R.ok(oks as O)
     })
 }
 
@@ -662,7 +652,7 @@ function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields
         if (errs.length > 0) {
             return error.oneOf(errs)
         }
-        return ok(Object.fromEntries(oks) as O)
+        return R.ok(Object.fromEntries(oks) as O)
     })
 }
 
