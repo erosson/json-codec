@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parse Distortion 1`] = `
+[
+  {
+    "body": {
+      "properties": [
+        {
+          "body": {
+            "path": "#/definitions/DistortionID",
+            "type": "ref",
+          },
+          "name": "slug",
+        },
+        {
+          "body": {
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
+          "name": "emoji",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "labelKey",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "descriptionKey",
+        },
+      ],
+      "type": "object",
+    },
+    "name": "Distortion",
+  },
+]
+`;
+
+exports[`parse DistortionID 1`] = `
+[
+  {
+    "body": {
+      "type": "string",
+    },
+    "name": "DistortionID",
+  },
+]
+`;
+
+exports[`parse Thought 1`] = `
+[
+  {
+    "body": {
+      "properties": [
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "automaticThought",
+        },
+        {
+          "body": {
+            "items": {
+              "path": "#/definitions/DistortionID",
+              "type": "ref",
+            },
+            "type": "array",
+          },
+          "name": "cognitiveDistoritions",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "challenge",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "alternativeThought",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "createdAt",
+        },
+        {
+          "body": {
+            "type": "string",
+          },
+          "name": "updatedAt",
+        },
+        {
+          "body": {
+            "path": "#/definitions/ThoughtID",
+            "type": "ref",
+          },
+          "name": "uuid",
+        },
+      ],
+      "type": "object",
+    },
+    "name": "Thought",
+  },
+]
+`;
+
+exports[`parse ThoughtID 1`] = `
+[
+  {
+    "body": {
+      "type": "string",
+    },
+    "name": "ThoughtID",
+  },
+]
+`;

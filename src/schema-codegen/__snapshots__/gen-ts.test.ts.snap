@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gen Distortion 1`] = `""`;
+
+exports[`gen DistortionID 1`] = `
+"type DistortionID = string;
+"
+`;

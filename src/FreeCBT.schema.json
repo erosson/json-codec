@@ -1,0 +1,143 @@
+{
+    "$id": "https://freecbt.erosson.org/FreeCBT.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "DistortionID": {
+            "type": "string",
+            "description": "Unique identifier of each predefined `Distortion`.",
+            "readOnly": true
+        },
+        "Distortion": {
+            "type": "object",
+            "properties": {
+                "slug": {
+                    "$ref": "#/definitions/DistortionID",
+                    "description": "Unique identifier for this distortion"
+                },
+                "emoji": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Emoji icons representing this distortion. Second icon is a fallback, used only if the first is not supported.",
+                    "minItems": 1,
+                    "maxItems": 2
+                },
+                "labelKey": {
+                    "type": "string",
+                    "description": "i18n key for the name of this distortion. If omitted, use `<snake_cased_slug>`"
+                },
+                "descriptionKey": {
+                    "type": "string",
+                    "description": "i18n key for the long description of this distortion. If omitted, use `<snake_cased_slug>_description`"
+                }
+            },
+            "required": [
+                "slug",
+                "emoji"
+            ],
+            "additionalProperties": false,
+            "description": "A predefined cognitive distortion. One of the logical fallacies behind automatic thoughts.",
+            "readOnly": true
+        },
+        "DistortionData": {
+            "type": "object",
+            "properties": {
+                "$schema": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Distortion"
+                    }
+                }
+            },
+            "required": [
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "ThoughtID": {
+            "type": "string",
+            "description": "Unique identifier of each thought.",
+            "readOnly": true
+        },
+        "Thought": {
+            "type": "object",
+            "properties": {
+                "automaticThought": {
+                    "type": "string",
+                    "description": "The distressing automatic negative thought. Prompted the user to do this exercise."
+                },
+                "cognitiveDistoritions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DistortionID"
+                    },
+                    "description": "A list of the logical fallacies behind this automatic thought. Chosen from a list of predefined distortions."
+                },
+                "challenge": {
+                    "type": "string",
+                    "description": "Why doesn't the automatic thought make sense? What are the problems with it? Based on the selected distortions."
+                },
+                "alternativeThought": {
+                    "type": "string",
+                    "description": "What could we think instead? What's a less distressing thought we could replace the automatic thought with?"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date this thought was first recorded. Automatically initialized.",
+                    "readOnly": true
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date this thought was last edited. Automatically updated.",
+                    "readOnly": true
+                },
+                "uuid": {
+                    "$ref": "#/definitions/ThoughtID",
+                    "description": "Random unique thought ID. Automatically initialized.",
+                    "readOnly": true
+                }
+            },
+            "required": [
+                "automaticThought",
+                "cognitiveDistoritions",
+                "challenge",
+                "alternativeThought",
+                "createdAt",
+                "updatedAt",
+                "uuid"
+            ],
+            "additionalProperties": false,
+            "description": "A single Cognitive Behavioral Therapy (CBT) exercise written by the user."
+        },
+        "Archive": {
+            "type": "object",
+            "properties": {
+                "thoughts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Thought"
+                    },
+                    "description": "A list of the user's thoughts."
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date this archive was created. Automatically initialized.",
+                    "readOnly": true
+                }
+            },
+            "required": [
+                "thoughts",
+                "createdAt"
+            ],
+            "additionalProperties": false,
+            "description": "A manually exported saved file, full of all of a user's thought exercises."
+        }
+    }
+}
