@@ -15,6 +15,22 @@ export function gen(parsed: P.Schema, out: M.SourceFile): void {
         genDef(def, out)
     }
 }
+function writeBody(body: P.SchemaBody): string | null {
+    switch (body.type) {
+        case 'string':
+        case 'number':
+        case 'boolean':
+        case 'null':
+            return body.type
+        case 'ref':
+            return P.refName(body) ?? null
+        case 'array':
+            return `Array<${writeBody(body.items)}>`
+        case 'object':
+            // TODO
+            return null
+    }
+}
 function genDef(def: P.SchemaDefinition, out: M.SourceFile): void {
     switch (def.body.type) {
         case 'string':
@@ -24,7 +40,7 @@ function genDef(def: P.SchemaDefinition, out: M.SourceFile): void {
             out.addTypeAlias({ name: def.name, type: def.body.type })
             return
         case 'object':
-            out.addInterface({ name: def.name, properties: def.body.properties.map(p => ({name: p.name, })) })
+            out.addInterface({ name: def.name, properties: def.body.properties.map(p => ({ name: p.name, type: writeBody(p.body) ?? 'unknown' })) })
             return
     }
 }

@@ -18,7 +18,7 @@ function err(src: string, message: string, json: any): R.Err<ParseError> {
     return R.err({ src, message, json })
 }
 
-function refName(ref: SchemaRef): string | null {
+export function refName(ref: SchemaRef): string | null {
     if (ref.path.startsWith('#/definitions/')) {
         return ref.path.replace('#/definitions/', '')
     }

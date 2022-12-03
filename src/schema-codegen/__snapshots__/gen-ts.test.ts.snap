@@ -1,16 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`gen Distortion 1`] = `
-"interface Distortion {
-    slug;
-    emoji;
-    labelKey;
-    descriptionKey;
+"type DistortionID = string;
+
+interface Distortion {
+    slug: DistortionID;
+    emoji: Array<string>;
+    labelKey: string;
+    descriptionKey: string;
 }
 "
 `;
 
 exports[`gen DistortionID 1`] = `
 "type DistortionID = string;
+"
+`;
+
+exports[`gen Thought 1`] = `
+"type DistortionID = string;
+
+interface Distortion {
+    slug: DistortionID;
+    emoji: Array<string>;
+    labelKey: string;
+    descriptionKey: string;
+}
+
+type ThoughtID = string;
+
+interface Thought {
+    automaticThought: string;
+    cognitiveDistoritions: Array<DistortionID>;
+    challenge: string;
+    alternativeThought: string;
+    createdAt: string;
+    updatedAt: string;
+    uuid: ThoughtID;
+}
+"
+`;
+
+exports[`gen ThoughtID 1`] = `
+"type ThoughtID = string;
 "
 `;
