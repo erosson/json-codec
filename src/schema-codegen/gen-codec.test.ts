@@ -8,29 +8,29 @@ function parseSource(schema: any): { errors: () => string, source: string } {
 }
 function parseValidSource(schema: any): string {
     const { errors, source } = parseSource(schema)
-    // expect(errors()).toBeFalsy()
+    expect(errors()).toBeFalsy()
     return source
 }
 
-xtest('gen DistortionID', () => {
+test('gen DistortionID', () => {
     const { DistortionID } = freecbt.definitions
     const schema = { ...DistortionID, title: 'DistortionID' }
     expect(parseValidSource(schema)).toMatchSnapshot()
 })
 
-xtest('gen Distortion', () => {
+test('gen Distortion', () => {
     const { DistortionID, Distortion } = freecbt.definitions
     const schema = { definitions: { DistortionID, Distortion } }
     expect(parseValidSource(schema)).toMatchSnapshot()
 })
 
-xtest('gen ThoughtID', () => {
+test('gen ThoughtID', () => {
     const { ThoughtID } = freecbt.definitions
     const schema = { ...ThoughtID, title: 'ThoughtID' }
     expect(parseValidSource(schema)).toMatchSnapshot()
 })
 
-xtest('gen Thought', () => {
+test('gen Thought', () => {
     const { ThoughtID, Thought, DistortionID, Distortion } = freecbt.definitions
     const schema = { definitions: { DistortionID, Distortion, ThoughtID, Thought } }
     expect(parseValidSource(schema)).toMatchSnapshot()
