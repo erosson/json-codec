@@ -86,6 +86,6 @@ function writeValue(body: P.SchemaBody): string | null {
             return `\
 D.combine({
 ${body.properties.map(prop => `${prop.name}: ${writeValue(prop.body)}`).join(",\n")},
-})`
+}, true)`
     }
 }

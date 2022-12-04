@@ -103,7 +103,7 @@ interface a {
 
 const decodeA: D.Decoder<a> = D.combine({
     b: D.string,
-    });
+    }, true);
 `)
 })
 

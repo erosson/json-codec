@@ -619,16 +619,27 @@ export function fail<T>(message: string): Decoder<T> {
  *       y: number.field(b),
  *       z: number.field(c),
  *     })
+ * 
+ * It's very common for combined fields to use the same structure as the
+ * original json though, so that has a shortcut:
+ * 
+ *     type Point3D = {x: number, y: number, z: number}
+ *     const point3d: Decoder<Point3D> = combine({
+ *       x: number,
+ *       y: number,
+ *       z: number,
+ *     }, true)
+ * 
  */
-export function combine<O extends { [s: string]: unknown }>(fields: DecoderFields<O>): Decoder<O>
+export function combine<O extends { [s: string]: unknown }>(fields: DecoderFields<O>, auto?: boolean): Decoder<O>
 export function combine<O extends unknown[]>(tuple: DecoderTuple<O>): Decoder<O>
 // There's some very fancypants static-typing here. More info:
 // https://www.typescriptlang.org/docs/handbook/2/mapped-types.html
-export function combine<O>(decoders: any): Decoder<any> {
+export function combine<O>(decoders: any, auto?: boolean): Decoder<any> {
     if (Array.isArray(decoders)) {
         return combineTuple(decoders)
     }
-    return combineFields(decoders)
+    return combineFields(decoders, auto)
 }
 type DecoderTuple<T extends unknown[]> = { [P in keyof T]: Decoder<T[P]> }
 type DecoderFields<T extends { [s: string]: unknown }> = { [P in keyof T]: Decoder<T[P]> }
@@ -652,10 +663,10 @@ function combineTuple<O extends unknown[]>(decoders: DecoderTuple<O>): Decoder<O
     })
 }
 
-function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields<O>): Decoder<O> {
+function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields<O>, auto: boolean = false): Decoder<O> {
     const pairs = Object.entries(fields)
     return new Decoder((json) => {
-        const items: [string, DecodeResult<any>][] = pairs.map(([k, d]) => [k, d.decoderFn(json)])
+        const items: [string, DecodeResult<any>][] = pairs.map(([k, d]) => [k, (auto ? d.field(k) : d).decoderFn(json)])
         const [errs, oks] = items.reduce(([errs, oks]: [DecodeError[], [string, any][]], [key, res]: [string, DecodeResult<any>]): [DecodeError[], [string, any][]] => {
             if (res.success) {
                 oks.push([key, res.value])

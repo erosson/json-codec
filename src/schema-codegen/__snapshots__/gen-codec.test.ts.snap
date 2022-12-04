@@ -18,7 +18,7 @@ const decodeDistortion: D.Decoder<Distortion> = D.combine({
     emoji: D.string.array(),
     labelKey: D.string,
     descriptionKey: D.string,
-    });
+    }, true);
 "
 `;
 
@@ -61,7 +61,7 @@ const decodeDistortion: D.Decoder<Distortion> = D.combine({
     emoji: D.string.array(),
     labelKey: D.string,
     descriptionKey: D.string,
-    });
+    }, true);
 const decodeThoughtID: D.Decoder<ThoughtID> = D.string;
 const decodeThought: D.Decoder<Thought> = D.combine({
     automaticThought: D.string,
@@ -71,7 +71,7 @@ const decodeThought: D.Decoder<Thought> = D.combine({
     createdAt: D.string,
     updatedAt: D.string,
     uuid: decodeThoughtID,
-    });
+    }, true);
 "
 `;
 

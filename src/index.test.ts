@@ -165,6 +165,16 @@ test("decode combined fields", () => {
     expect(() => D.combine({ a: D.string.field('a'), b: D.number.field('b') }).decodeValue({ a: 'yay', c: 3 })).toThrow('Missing key')
 })
 
+test("decode combined auto-fields", () => {
+    type AB = { a: string, b: number }
+    // type can be inferred...
+    expect(D.combine({ a: D.string, b: D.number }, true).decodeValue({ a: 'yay', b: 3 })).toEqual({ a: 'yay', b: 3 })
+    // ...or explicit
+    expect(D.combine<AB>({ a: D.string, b: D.number }, true).decodeValue({ a: 'yay', b: 3 })).toEqual({ a: 'yay', b: 3 })
+
+    expect(() => D.combine({ a: D.string, b: D.number }, true).decodeValue({ a: 'yay', c: 3 })).toThrow('oneOf')
+})
+
 test("decode combined arrays", () => {
     type AB = [string, number]
     // type can be inferred...

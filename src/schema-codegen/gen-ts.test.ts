@@ -8,7 +8,7 @@ function parseSource(schema: any): { errors: () => string, source: string } {
 }
 function parseValidSource(schema: any): string {
     const { errors, source } = parseSource(schema)
-    expect(errors).toBeFalsy()
+    expect(errors()).toBeFalsy()
     return source
 }
 
