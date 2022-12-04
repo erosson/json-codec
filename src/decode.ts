@@ -664,9 +664,11 @@ function combineTuple<O extends unknown[]>(decoders: DecoderTuple<O>): Decoder<O
 }
 
 function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields<O>, auto: boolean = false): Decoder<O> {
-    const pairs = Object.entries(fields)
+    const pairs = auto
+        ? Object.entries(fields).map(([k, d]) => [k, d.field(k)])
+        : Object.entries(fields)
     return new Decoder((json) => {
-        const items: [string, DecodeResult<any>][] = pairs.map(([k, d]) => [k, (auto ? d.field(k) : d).decoderFn(json)])
+        const items: [string, DecodeResult<any>][] = pairs.map(([k, d]) => [k, d.decoderFn(json)])
         const [errs, oks] = items.reduce(([errs, oks]: [DecodeError[], [string, any][]], [key, res]: [string, DecodeResult<any>]): [DecodeError[], [string, any][]] => {
             if (res.success) {
                 oks.push([key, res.value])
