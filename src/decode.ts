@@ -459,6 +459,23 @@ export const number = new Decoder<number>(
     })
 
 /**
+ * Decode a JSON number into a Typescript number, and tests for integer-ness.
+ * 
+ *     number.decodeString("true") // throws ParseError
+ *     number.decodeString("42") // 42: number
+ *     number.decodeString("3.14") // throws ParseError
+ *     number.decodeString("\"hello\"") // throws ParseError
+ *     number.decodeString("{ \"hello\": 42}") // throws ParseError
+ *     number.decodeString("null") // throws ParseError
+ */
+export const integer = number.andThen((v: number) => {
+    if (Number.isInteger(v)) {
+        return succeed(v)
+    }
+    return fail(`expecting an INTEGER: ${v}`)
+})
+
+/**
  * Decode a JSON boolean into a Typescript boolean.
  * 
  *     boolean.decodeString("true") // true: boolean
