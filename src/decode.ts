@@ -7,6 +7,7 @@
  * https://guide.elm-lang.org/effects/json.html
  */
 import { Value } from './json'
+import * as R from './result'
 
 type FieldError = { decodeError: 'field', path: (string | number)[], field: string, error: DecodeError }
 type IndexError = { decodeError: 'index', path: (string | number)[], index: number, error: DecodeError }
@@ -39,18 +40,11 @@ const error = {
     },
 }
 
-type Err<E> = { success: false, error: E }
-type Ok<V> = { success: true, value: V }
-type Result<E, V> = Err<E> | Ok<V>
+export type DecodeErr = R.Err<DecodeError>
+export type DecodeResult<V> = R.Result<DecodeError, V>
 
-type DecodeErr = Err<DecodeError>
-type DecodeResult<V> = Result<DecodeError, V>
-
-function ok<V>(value: V): Ok<V> {
-    return { success: true, value }
-}
 function err(error: DecodeError): DecodeErr {
-    return { success: false, error }
+    return R.err(error)
 }
 
 
@@ -75,7 +69,7 @@ export class Decoder<T> {
      */
     decodeValue(value: Value): T {
         const res = this.decoderFn(value)
-        if (res.success) {
+        if (res.ok) {
             return res.value
         }
         throw new Error(JSON.stringify(res.error, null, 2))
@@ -91,6 +85,14 @@ export class Decoder<T> {
      */
     decodeString(value: string): T {
         return this.decodeValue(JSON.parse(value))
+    }
+
+    decodeResultValue(value: Value): DecodeResult<T> {
+        return this.decoderFn(value)
+    }
+
+    decodeResultString(value: string): DecodeResult<T> {
+        return this.decodeResultValue(JSON.parse(value))
     }
 
     /**
@@ -125,8 +127,8 @@ export class Decoder<T> {
         const d = this
         return new Decoder((v) => {
             const resA = d.decoderFn(v)
-            return resA.success
-                ? ok(fn(resA.value))
+            return resA.ok
+                ? R.ok(fn(resA.value))
                 : resA
         })
     }
@@ -153,7 +155,7 @@ export class Decoder<T> {
         const d = this
         return new Decoder((v) => {
             const resA = d.decoderFn(v)
-            return resA.success
+            return resA.ok
                 ? fn(resA.value).decoderFn(v)
                 : resA
         })
@@ -173,11 +175,11 @@ export class Decoder<T> {
         const a = this
         return new Decoder(function union(v): DecodeResult<T | V> {
             const ar = a.decoderFn(v)
-            if (ar.success) {
+            if (ar.ok) {
                 return ar
             }
             const br = b.decoderFn(v)
-            if (br.success) {
+            if (br.ok) {
                 return br
             }
             return error.oneOf([ar.error, br.error])
@@ -247,7 +249,7 @@ export class Decoder<T> {
             if (Array.isArray(v)) {
                 const items: DecodeResult<T>[] = v.map(this_.decoderFn)
                 const [errs, oks] = items.reduce(([errs, oks]: [[number, DecodeError][], T[]], res: DecodeResult<T>, index: number): [[number, DecodeError][], T[]] => {
-                    if (res.success) {
+                    if (res.ok) {
                         oks.push(res.value)
                     }
                     else {
@@ -259,7 +261,7 @@ export class Decoder<T> {
                     const [index, e] = errs[0]
                     return error.index(index, e)
                 }
-                return ok(oks)
+                return R.ok(oks)
             }
             else {
                 return error.expecting('an ARRAY', v)
@@ -279,7 +281,7 @@ export class Decoder<T> {
             if (typeof v === 'object' && v !== null) {
                 const items: [string, DecodeResult<T>][] = Object.entries(v).map(([k, c]) => [k, d.decoderFn(c)])
                 const [errs, oks] = items.reduce(([errs, oks]: [[string, DecodeError][], [string, T][]], [key, res]: [string, DecodeResult<T>]): [[string, DecodeError][], [string, T][]] => {
-                    if (res.success) {
+                    if (res.ok) {
                         oks.push([key, res.value])
                     }
                     else {
@@ -291,7 +293,7 @@ export class Decoder<T> {
                     const [key, e] = errs[0]
                     return error.field(key, e)
                 }
-                return ok(oks)
+                return R.ok(oks)
             }
             return error.expecting('an OBJECT', v)
         })
@@ -311,7 +313,7 @@ export class Decoder<T> {
         const d = this
         return new Decoder(function dict(v) {
             const entries = d.keyValuePairs().decoderFn(v)
-            return entries.success ? ok(Object.fromEntries(entries.value)) : entries
+            return entries.ok ? R.ok(Object.fromEntries(entries.value)) : entries
         })
     }
 
@@ -337,7 +339,7 @@ export class Decoder<T> {
             if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
                 if (key in v) {
                     const res = d.decoderFn(v[key])
-                    if (!res.success) {
+                    if (!res.ok) {
                         res.error.path = [key, ...res.error.path]
                     }
                     return res
@@ -366,7 +368,7 @@ export class Decoder<T> {
             if (Array.isArray(v)) {
                 if (i in v) {
                     const res = d.decoderFn(v[i])
-                    if (!res.success) {
+                    if (!res.ok) {
                         res.error.path = [i, ...res.error.path]
                     }
                     return res
@@ -415,7 +417,7 @@ export class Decoder<T> {
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i]
                 const res = value.get(key).decoderFn(v)
-                if (res.success) {
+                if (res.ok) {
                     v = res.value
                 }
                 else {
@@ -424,10 +426,16 @@ export class Decoder<T> {
                 }
             }
             const res = d.decoderFn(v)
-            if (!res.success) {
+            if (!res.ok) {
                 res.error.path = [...Array.from(keys), ...res.error.path]
             }
             return res
+        })
+    }
+
+    failUnless(pred: (v: T) => boolean, message: string): Decoder<T> {
+        return this.andThen(v => {
+            return pred(v) ? succeed(v) : fail(message)
         })
     }
 }
@@ -445,7 +453,7 @@ export class Decoder<T> {
 export const string = new Decoder<string>(
     function string(v) {
         if (typeof v === "string") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a STRING', v)
     })
@@ -463,7 +471,7 @@ export const string = new Decoder<string>(
 export const number = new Decoder<number>(
     function number(v) {
         if (typeof v === "number") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a NUMBER', v)
     })
@@ -481,7 +489,7 @@ export const number = new Decoder<number>(
 export const boolean = new Decoder<boolean>(
     function boolean(v) {
         if (typeof v === "boolean") {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a BOOLEAN', v)
     })
@@ -499,7 +507,7 @@ export const boolean = new Decoder<boolean>(
 export const null_ = new Decoder<null>(
     function null_(v) {
         if (v === null) {
-            return ok(v)
+            return R.ok(v)
         }
         return error.expecting('a NULL', v)
     })
@@ -519,7 +527,7 @@ export function nullAs<T>(default_: T): Decoder<T> {
  * Value. This can be useful if you have particularly complex data that you
  * would like to deal with later, or if you do not care about its structure.
  */
-export const value = new Decoder<Value>(ok)
+export const value = new Decoder<Value>(R.ok)
 
 /**
  * Try a bunch of different decoders.
@@ -545,7 +553,7 @@ export function oneOf<T>(head: Decoder<T>, ...tail: Decoder<T>[]): Decoder<T> {
         const errors = []
         for (let decoder of [head, ...tail]) {
             const res = decoder['decoderFn'](v)
-            if (res.success) {
+            if (res.ok) {
                 return res
             }
             errors.push(res.error)
@@ -570,7 +578,7 @@ function maybe<T>(decoder: Decoder<T>, default_?: any): Decoder<T | any> {
  * This is handy when used with oneOf or andThen.
  */
 export function succeed<T>(value: T): Decoder<T> {
-    return new Decoder(() => ok(value))
+    return new Decoder(() => R.ok(value))
 }
 
 /**
@@ -630,7 +638,7 @@ function combineTuple<O extends unknown[]>(decoders: DecoderTuple<O>): Decoder<O
     return new Decoder((v) => {
         const items: DecodeResult<any>[] = decoders.map(d => d['decoderFn'](v))
         const [errs, oks] = items.reduce(([errs, oks]: [DecodeError[], any[]], res: DecodeResult<any>): [DecodeError[], any[]] => {
-            if (res.success) {
+            if (res.ok) {
                 oks.push(res.value)
             }
             else {
@@ -641,7 +649,7 @@ function combineTuple<O extends unknown[]>(decoders: DecoderTuple<O>): Decoder<O
         if (errs.length > 0) {
             return error.oneOf(errs)
         }
-        return ok(oks as O)
+        return R.ok(oks as O)
     })
 }
 
@@ -650,7 +658,7 @@ function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields
     return new Decoder((json) => {
         const items: [string, DecodeResult<any>][] = pairs.map(([k, d]) => [k, d.decoderFn(json)])
         const [errs, oks] = items.reduce(([errs, oks]: [DecodeError[], [string, any][]], [key, res]: [string, DecodeResult<any>]): [DecodeError[], [string, any][]] => {
-            if (res.success) {
+            if (res.ok) {
                 oks.push([key, res.value])
             }
             else {
@@ -662,7 +670,7 @@ function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields
         if (errs.length > 0) {
             return error.oneOf(errs)
         }
-        return ok(Object.fromEntries(oks) as O)
+        return R.ok(Object.fromEntries(oks) as O)
     })
 }
 
@@ -672,7 +680,24 @@ function combineFields<O extends { [s: string]: unknown }>(fields: DecoderFields
  *     import * as Encode from './encode'
  * 
  *     const now = new Date()
- *     const encoded = Encode.date(now)
- *     date.decodeValue(encoded) === now
+ *     const encoded = Encode.dateEpoch(now)
+ *     dateEpoch.decodeValue(encoded) === now
  */
-export const date: Decoder<Date> = number.map(ms => new Date(ms))
+export const dateEpoch: Decoder<Date> =
+    number
+        .map(ms => new Date(ms))
+        .andThen(d => isNaN(d.getTime()) ? fail('invalid date') : succeed(d))
+
+/**
+ * Decode a date as an ISO-formatted string.
+ * 
+ *     import * as Encode from './encode'
+ * 
+ *     const now = new Date()
+ *     const encoded = Encode.dateISOString(now)
+ *     dateISOString.decodeValue(encoded) === now
+ */
+export const dateISOString: Decoder<Date> =
+    string
+        .map(s => new Date(s))
+        .andThen(d => isNaN(d.getTime()) ? fail('invalid date') : succeed(d)) 
