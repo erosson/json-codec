@@ -8,6 +8,39 @@ export type Value = string | number | boolean | null | Value[] | {
  * @see Value
  */
 export type JSON = Value;
+interface Result_<E, V> {
+    ok: boolean;
+    map<V2>(fn: (v: V) => V2): Result<E, V2>;
+    mapError<E2>(fn: (e: E) => E2): Result<E2, V>;
+    mapBoth<E2, V2>(mapError: (e: E) => E2, map: (v: V) => V2): Result<E2, V2>;
+    andThen<V2>(fn: (v: V) => Result_<E, V2>): Result<E, V2>;
+    failUnless(pred: (v: V) => boolean, error: E): Result<E, V>;
+    withDefault(v: V): V;
+}
+declare class Ok<V> implements Result_<any, V> {
+    value: V;
+    constructor(value: V);
+    get ok(): true;
+    map<V2>(fn: (v: V) => V2): Ok<V2>;
+    mapError(_: (e: any) => any): Ok<V>;
+    mapBoth<V2>(_: (_: any) => any, fn: (v: V) => V2): Ok<V2>;
+    andThen<E, V2>(fn: (v: V) => Result<E, V2>): Result<E, V2>;
+    failUnless<E>(pred: (v: V) => boolean, error: E): Result<E, V>;
+    withDefault(_: V): V;
+}
+declare class Err<E> implements Result_<E, any> {
+    error: E;
+    constructor(error: E);
+    get ok(): false;
+    map(_: (v: any) => any): Err<E>;
+    mapError<E2>(fn: (e: E) => E2): Err<E2>;
+    mapBoth<E2>(fn: (e: E) => E2, _: (_: any) => any): Err<E2>;
+    andThen(_: (v: any) => Result<E, any>): Err<E>;
+    failUnless(_: (v: any) => boolean, __: E): Err<E>;
+    withDefault<V>(v: V): V;
+}
+type Result<E, V> = Err<E> | Ok<V>;
+declare function ok<V>(value: V): Ok<V>;
 type FieldError = {
     decodeError: 'field';
     path: (string | number)[];
@@ -32,16 +65,8 @@ type FailureError = {
     value: Value;
 };
 type DecodeError = FieldError | IndexError | OneOfError | FailureError;
-type Err<E> = {
-    success: false;
-    error: E;
-};
-type Ok<V> = {
-    success: true;
-    value: V;
-};
-type Result<E, V> = Err<E> | Ok<V>;
-type DecodeResult<V> = Result<DecodeError, V>;
+export type DecodeErr = Err<DecodeError>;
+export type DecodeResult<V> = Result<DecodeError, V>;
 /**
  * A value that knows how to decode JSON values.
  *
@@ -70,6 +95,8 @@ export class Decoder<T> {
      *     number.decodeString("1 + 2") // throws ParseError
      */
     decodeString(value: string): T;
+    decodeResultValue(value: Value): DecodeResult<T>;
+    decodeResultString(value: string): DecodeResult<T>;
     /**
      * Transform a decoder. Maybe you just want to know the length of a string:
      *
@@ -256,6 +283,7 @@ export class Decoder<T> {
      * See also the {@link at} function (this is the `at` method)
      */
     at(keys: (number | string)[]): Decoder<T>;
+    failUnless(pred: (v: T) => boolean, message: string): Decoder<T>;
 }
 /**
  * Decode a JSON string into a Typescript string.
@@ -398,10 +426,20 @@ type DecoderFields<T extends {
  *     import * as Encode from './encode'
  *
  *     const now = new Date()
- *     const encoded = Encode.date(now)
- *     date.decodeValue(encoded) === now
+ *     const encoded = Encode.dateEpoch(now)
+ *     dateEpoch.decodeValue(encoded) === now
  */
-export const date: Decoder<Date>;
+export const dateEpoch: Decoder<Date>;
+/**
+ * Decode a date as an ISO-formatted string.
+ *
+ *     import * as Encode from './encode'
+ *
+ *     const now = new Date()
+ *     const encoded = Encode.dateISOString(now)
+ *     dateISOString.decodeValue(encoded) === now
+ */
+export const dateISOString: Decoder<Date>;
 export const Encode: typeof E;
 
 //# sourceMappingURL=types.d.ts.map

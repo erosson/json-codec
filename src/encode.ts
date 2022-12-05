@@ -6,15 +6,30 @@
  */
 import { Value } from './json'
 
+export type Encoder<T> = (value: T) => Value
+
 /**
- * Decode a date as milliseconds since the unix epoch.
+ * Encode a date as milliseconds since the unix epoch.
  * 
  *     import * as Encode from './encode'
  * 
  *     const now = new Date()
- *     const encoded = Encode.date(now)
- *     date.decodeValue(encoded) === now
+ *     const encoded = Encode.dateEpoch(now)
+ *     dateEpoch.decodeValue(encoded) === now
  */
-export function date(value: Date): Value {
+export function dateEpoch(value: Date): Value {
     return value.getTime()
+}
+
+/**
+ * Encode a date as an ISO-formatted string.
+ * 
+ *     import * as Encode from './encode'
+ * 
+ *     const now = new Date()
+ *     const encoded = Encode.dateISOString(now)
+ *     dateISOString.decodeValue(encoded) === now
+ */
+export function dateISOString(value: Date): Value {
+    return value.toISOString()
 }

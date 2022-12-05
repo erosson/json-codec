@@ -150,9 +150,10 @@ test("decode nullAs", () => {
 })
 test("decode date", () => {
     const now = new Date()
-    expect(D.date.decodeValue(now.getTime())).toStrictEqual(now)
-    expect(D.date.decodeValue(D.Encode.date(now))).toStrictEqual(now)
-    expect(D.date.decodeValue(1234)).toStrictEqual(new Date(1234))
+    expect(D.dateEpoch.decodeValue(now.getTime())).toStrictEqual(now)
+    expect(D.dateEpoch.decodeValue(D.Encode.dateEpoch(now))).toStrictEqual(now)
+    expect(D.dateEpoch.decodeValue(D.Encode.dateEpoch(now))).toStrictEqual(now)
+    expect(D.dateEpoch.decodeValue(1234)).toStrictEqual(new Date(1234))
 })
 
 test("decode combined fields", () => {

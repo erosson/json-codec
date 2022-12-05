@@ -21,14 +21,18 @@ function $parcel$exportWildcard(dest, source) {
 $parcel$export(module.exports, "Encode", () => $882b6d93070905b3$export$7feeb05a8babbb15);
 var $3b0fb3d685bd31ec$exports = {};
 
-$parcel$export($3b0fb3d685bd31ec$exports, "date", () => $3b0fb3d685bd31ec$export$324d90190a8b822a);
+$parcel$export($3b0fb3d685bd31ec$exports, "dateEpoch", () => $3b0fb3d685bd31ec$export$ae9a644a0f2232e4);
+$parcel$export($3b0fb3d685bd31ec$exports, "dateISOString", () => $3b0fb3d685bd31ec$export$eb4d3bcbcf2cfbd9);
 /**
  * Turn Typescript values into JSON values.
  * 
  * `JSON.stringify` does most of this for us in Typescript, so this module is
  * much smaller than the Elm equivalent.
- */ function $3b0fb3d685bd31ec$export$324d90190a8b822a(value) {
+ */ function $3b0fb3d685bd31ec$export$ae9a644a0f2232e4(value) {
     return value.getTime();
+}
+function $3b0fb3d685bd31ec$export$eb4d3bcbcf2cfbd9(value) {
+    return value.toISOString();
 }
 
 
@@ -42,15 +46,16 @@ var $527acf6ebd7922fb$exports = {};
 $parcel$export($527acf6ebd7922fb$exports, "Decoder", () => $527acf6ebd7922fb$export$f9de6ca0bc043724);
 $parcel$export($527acf6ebd7922fb$exports, "null_", () => $527acf6ebd7922fb$export$b342ac4038ddb855);
 $parcel$export($527acf6ebd7922fb$exports, "value", () => $527acf6ebd7922fb$export$2ab9a8f9f1186f14);
+$parcel$export($527acf6ebd7922fb$exports, "succeed", () => $527acf6ebd7922fb$export$9094b7742a87955e);
+$parcel$export($527acf6ebd7922fb$exports, "fail", () => $527acf6ebd7922fb$export$2b62a06a9fee979c);
 $parcel$export($527acf6ebd7922fb$exports, "string", () => $527acf6ebd7922fb$export$22b082955e083ec3);
 $parcel$export($527acf6ebd7922fb$exports, "number", () => $527acf6ebd7922fb$export$98e628dec113755e);
 $parcel$export($527acf6ebd7922fb$exports, "boolean", () => $527acf6ebd7922fb$export$4a21f16c33752377);
 $parcel$export($527acf6ebd7922fb$exports, "nullAs", () => $527acf6ebd7922fb$export$958ee7e3eb738d4b);
 $parcel$export($527acf6ebd7922fb$exports, "oneOf", () => $527acf6ebd7922fb$export$a9a18ae5ba42aeab);
-$parcel$export($527acf6ebd7922fb$exports, "succeed", () => $527acf6ebd7922fb$export$9094b7742a87955e);
-$parcel$export($527acf6ebd7922fb$exports, "fail", () => $527acf6ebd7922fb$export$2b62a06a9fee979c);
 $parcel$export($527acf6ebd7922fb$exports, "combine", () => $527acf6ebd7922fb$export$1be1fc439b849fdf);
-$parcel$export($527acf6ebd7922fb$exports, "date", () => $527acf6ebd7922fb$export$324d90190a8b822a);
+$parcel$export($527acf6ebd7922fb$exports, "dateEpoch", () => $527acf6ebd7922fb$export$ae9a644a0f2232e4);
+$parcel$export($527acf6ebd7922fb$exports, "dateISOString", () => $527acf6ebd7922fb$export$eb4d3bcbcf2cfbd9);
 /**
  * Turn JSON values into typed, validated Typescript values.
  * 
@@ -58,7 +63,67 @@ $parcel$export($527acf6ebd7922fb$exports, "date", () => $527acf6ebd7922fb$export
  * 
  * Definitely check out the Elm to JSON decoders to get a feel for how this library works!
  * https://guide.elm-lang.org/effects/json.html
- */ const $527acf6ebd7922fb$var$error = {
+ */ class $045f9acb7015cc32$export$8146e38189b4f4dc {
+    constructor(value){
+        this.value = value;
+    }
+    get ok() {
+        return true;
+    }
+    map(fn) {
+        return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(fn(this.value));
+    }
+    mapError(_) {
+        return this;
+    }
+    mapBoth(_, fn) {
+        return this.map(fn);
+    }
+    andThen(fn) {
+        return fn(this.value);
+    }
+    failUnless(pred, error) {
+        return pred(this.value) ? this : $045f9acb7015cc32$export$8048b892d651b310(error);
+    }
+    withDefault(_) {
+        return this.value;
+    }
+}
+class $045f9acb7015cc32$export$3659d3f2d3dfceb8 {
+    constructor(error){
+        this.error = error;
+    }
+    get ok() {
+        return false;
+    }
+    map(_) {
+        return this;
+    }
+    mapError(fn) {
+        return $045f9acb7015cc32$export$8048b892d651b310(fn(this.error));
+    }
+    mapBoth(fn, _) {
+        return this.mapError(fn);
+    }
+    andThen(_) {
+        return this;
+    }
+    failUnless(_, __) {
+        return this;
+    }
+    withDefault(v) {
+        return v;
+    }
+}
+function $045f9acb7015cc32$export$dcb8b3f0e2de7e49(value) {
+    return new $045f9acb7015cc32$export$8146e38189b4f4dc(value);
+}
+function $045f9acb7015cc32$export$8048b892d651b310(error) {
+    return new $045f9acb7015cc32$export$3659d3f2d3dfceb8(error);
+}
+
+
+const $527acf6ebd7922fb$var$error = {
     field (field, error) {
         return $527acf6ebd7922fb$var$err({
             decodeError: "field",
@@ -107,17 +172,8 @@ $parcel$export($527acf6ebd7922fb$exports, "date", () => $527acf6ebd7922fb$export
         });
     }
 };
-function $527acf6ebd7922fb$var$ok(value) {
-    return {
-        success: true,
-        value: value
-    };
-}
 function $527acf6ebd7922fb$var$err(error) {
-    return {
-        success: false,
-        error: error
-    };
+    return $045f9acb7015cc32$export$8048b892d651b310(error);
 }
 class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
     /**
@@ -133,7 +189,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
      *     number.decodeValue("four") // throws ParseError
      */ decodeValue(value) {
         const res = this.decoderFn(value);
-        if (res.success) return res.value;
+        if (res.ok) return res.value;
         throw new Error(JSON.stringify(res.error, null, 2));
     }
     /**
@@ -145,6 +201,12 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
      *     number.decodeString("1 + 2") // throws ParseError
      */ decodeString(value) {
         return this.decodeValue(JSON.parse(value));
+    }
+    decodeResultValue(value) {
+        return this.decoderFn(value);
+    }
+    decodeResultString(value) {
+        return this.decodeResultValue(JSON.parse(value));
     }
     /**
      * Transform a decoder. Maybe you just want to know the length of a string:
@@ -177,7 +239,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
         const d = this;
         return new $527acf6ebd7922fb$export$f9de6ca0bc043724((v)=>{
             const resA = d.decoderFn(v);
-            return resA.success ? $527acf6ebd7922fb$var$ok(fn(resA.value)) : resA;
+            return resA.ok ? $045f9acb7015cc32$export$dcb8b3f0e2de7e49(fn(resA.value)) : resA;
         });
     }
     /**
@@ -201,7 +263,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
         const d = this;
         return new $527acf6ebd7922fb$export$f9de6ca0bc043724((v)=>{
             const resA = d.decoderFn(v);
-            return resA.success ? fn(resA.value).decoderFn(v) : resA;
+            return resA.ok ? fn(resA.value).decoderFn(v) : resA;
         });
     }
     /**
@@ -217,9 +279,9 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
         const a = this;
         return new $527acf6ebd7922fb$export$f9de6ca0bc043724(function union(v) {
             const ar = a.decoderFn(v);
-            if (ar.success) return ar;
+            if (ar.ok) return ar;
             const br = b.decoderFn(v);
-            if (br.success) return br;
+            if (br.ok) return br;
             return $527acf6ebd7922fb$var$error.oneOf([
                 ar.error,
                 br.error
@@ -258,7 +320,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
             if (Array.isArray(v)) {
                 const items = v.map(this_.decoderFn);
                 const [errs, oks] = items.reduce(([errs, oks], res, index)=>{
-                    if (res.success) oks.push(res.value);
+                    if (res.ok) oks.push(res.value);
                     else errs.push([
                         index,
                         res.error
@@ -275,7 +337,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
                     const [index, e] = errs[0];
                     return $527acf6ebd7922fb$var$error.index(index, e);
                 }
-                return $527acf6ebd7922fb$var$ok(oks);
+                return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(oks);
             } else return $527acf6ebd7922fb$var$error.expecting("an ARRAY", v);
         });
     }
@@ -293,7 +355,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
                         d.decoderFn(c)
                     ]);
                 const [errs, oks] = items.reduce(([errs, oks], [key, res])=>{
-                    if (res.success) oks.push([
+                    if (res.ok) oks.push([
                         key,
                         res.value
                     ]);
@@ -313,7 +375,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
                     const [key, e] = errs[0];
                     return $527acf6ebd7922fb$var$error.field(key, e);
                 }
-                return $527acf6ebd7922fb$var$ok(oks);
+                return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(oks);
             }
             return $527acf6ebd7922fb$var$error.expecting("an OBJECT", v);
         });
@@ -331,7 +393,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
         const d = this;
         return new $527acf6ebd7922fb$export$f9de6ca0bc043724(function dict(v) {
             const entries = d.keyValuePairs().decoderFn(v);
-            return entries.success ? $527acf6ebd7922fb$var$ok(Object.fromEntries(entries.value)) : entries;
+            return entries.ok ? $045f9acb7015cc32$export$dcb8b3f0e2de7e49(Object.fromEntries(entries.value)) : entries;
         });
     }
     /**
@@ -355,7 +417,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
             if (typeof v === "object" && v !== null && !Array.isArray(v)) {
                 if (key in v) {
                     const res = d.decoderFn(v[key]);
-                    if (!res.success) res.error.path = [
+                    if (!res.ok) res.error.path = [
                         key,
                         ...res.error.path
                     ];
@@ -383,7 +445,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
             if (Array.isArray(v)) {
                 if (i in v) {
                     const res = d.decoderFn(v[i]);
-                    if (!res.success) res.error.path = [
+                    if (!res.ok) res.error.path = [
                         i,
                         ...res.error.path
                     ];
@@ -427,7 +489,7 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
             for(let i = 0; i < keys.length; i++){
                 const key = keys[i];
                 const res = $527acf6ebd7922fb$export$2ab9a8f9f1186f14.get(key).decoderFn(v);
-                if (res.success) v = res.value;
+                if (res.ok) v = res.value;
                 else {
                     res.error.path = [
                         ...keys.slice(0, i),
@@ -437,34 +499,39 @@ class $527acf6ebd7922fb$export$f9de6ca0bc043724 {
                 }
             }
             const res1 = d.decoderFn(v);
-            if (!res1.success) res1.error.path = [
+            if (!res1.ok) res1.error.path = [
                 ...Array.from(keys),
                 ...res1.error.path
             ];
             return res1;
         });
     }
+    failUnless(pred, message) {
+        return this.andThen((v)=>{
+            return pred(v) ? $527acf6ebd7922fb$export$9094b7742a87955e(v) : $527acf6ebd7922fb$export$2b62a06a9fee979c(message);
+        });
+    }
 }
 const $527acf6ebd7922fb$export$22b082955e083ec3 = new $527acf6ebd7922fb$export$f9de6ca0bc043724(function string(v) {
-    if (typeof v === "string") return $527acf6ebd7922fb$var$ok(v);
+    if (typeof v === "string") return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(v);
     return $527acf6ebd7922fb$var$error.expecting("a STRING", v);
 });
 const $527acf6ebd7922fb$export$98e628dec113755e = new $527acf6ebd7922fb$export$f9de6ca0bc043724(function number(v) {
-    if (typeof v === "number") return $527acf6ebd7922fb$var$ok(v);
+    if (typeof v === "number") return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(v);
     return $527acf6ebd7922fb$var$error.expecting("a NUMBER", v);
 });
 const $527acf6ebd7922fb$export$4a21f16c33752377 = new $527acf6ebd7922fb$export$f9de6ca0bc043724(function boolean(v) {
-    if (typeof v === "boolean") return $527acf6ebd7922fb$var$ok(v);
+    if (typeof v === "boolean") return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(v);
     return $527acf6ebd7922fb$var$error.expecting("a BOOLEAN", v);
 });
 const $527acf6ebd7922fb$export$b342ac4038ddb855 = new $527acf6ebd7922fb$export$f9de6ca0bc043724(function null_(v) {
-    if (v === null) return $527acf6ebd7922fb$var$ok(v);
+    if (v === null) return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(v);
     return $527acf6ebd7922fb$var$error.expecting("a NULL", v);
 });
 function $527acf6ebd7922fb$export$958ee7e3eb738d4b(default_) {
     return $527acf6ebd7922fb$export$b342ac4038ddb855.map(()=>default_);
 }
-const $527acf6ebd7922fb$export$2ab9a8f9f1186f14 = new $527acf6ebd7922fb$export$f9de6ca0bc043724($527acf6ebd7922fb$var$ok);
+const $527acf6ebd7922fb$export$2ab9a8f9f1186f14 = new $527acf6ebd7922fb$export$f9de6ca0bc043724($045f9acb7015cc32$export$dcb8b3f0e2de7e49);
 function $527acf6ebd7922fb$export$a9a18ae5ba42aeab(head, ...tail) {
     return new $527acf6ebd7922fb$export$f9de6ca0bc043724(function oneOf(v) {
         const errors = [];
@@ -473,7 +540,7 @@ function $527acf6ebd7922fb$export$a9a18ae5ba42aeab(head, ...tail) {
             ...tail
         ]){
             const res = decoder["decoderFn"](v);
-            if (res.success) return res;
+            if (res.ok) return res;
             errors.push(res.error);
         }
         return $527acf6ebd7922fb$var$error.oneOf(errors);
@@ -483,7 +550,7 @@ function $527acf6ebd7922fb$var$maybe(decoder, default_) {
     return $527acf6ebd7922fb$export$a9a18ae5ba42aeab(decoder, $527acf6ebd7922fb$export$9094b7742a87955e(default_ ?? null));
 }
 function $527acf6ebd7922fb$export$9094b7742a87955e(value) {
-    return new $527acf6ebd7922fb$export$f9de6ca0bc043724(()=>$527acf6ebd7922fb$var$ok(value));
+    return new $527acf6ebd7922fb$export$f9de6ca0bc043724(()=>$045f9acb7015cc32$export$dcb8b3f0e2de7e49(value));
 }
 function $527acf6ebd7922fb$export$2b62a06a9fee979c(message) {
     return new $527acf6ebd7922fb$export$f9de6ca0bc043724((value)=>$527acf6ebd7922fb$var$error.failure(message, value));
@@ -496,7 +563,7 @@ function $527acf6ebd7922fb$var$combineTuple(decoders) {
     return new $527acf6ebd7922fb$export$f9de6ca0bc043724((v)=>{
         const items = decoders.map((d)=>d["decoderFn"](v));
         const [errs, oks] = items.reduce(([errs, oks], res)=>{
-            if (res.success) oks.push(res.value);
+            if (res.ok) oks.push(res.value);
             else errs.push(res.error);
             return [
                 errs,
@@ -507,7 +574,7 @@ function $527acf6ebd7922fb$var$combineTuple(decoders) {
             []
         ]);
         if (errs.length > 0) return $527acf6ebd7922fb$var$error.oneOf(errs);
-        return $527acf6ebd7922fb$var$ok(oks);
+        return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(oks);
     });
 }
 function $527acf6ebd7922fb$var$combineFields(fields) {
@@ -518,7 +585,7 @@ function $527acf6ebd7922fb$var$combineFields(fields) {
                 d.decoderFn(json)
             ]);
         const [errs, oks] = items.reduce(([errs, oks], [key, res])=>{
-            if (res.success) oks.push([
+            if (res.ok) oks.push([
                 key,
                 res.value
             ]);
@@ -538,10 +605,11 @@ function $527acf6ebd7922fb$var$combineFields(fields) {
             []
         ]);
         if (errs.length > 0) return $527acf6ebd7922fb$var$error.oneOf(errs);
-        return $527acf6ebd7922fb$var$ok(Object.fromEntries(oks));
+        return $045f9acb7015cc32$export$dcb8b3f0e2de7e49(Object.fromEntries(oks));
     });
 }
-const $527acf6ebd7922fb$export$324d90190a8b822a = $527acf6ebd7922fb$export$98e628dec113755e.map((ms)=>new Date(ms));
+const $527acf6ebd7922fb$export$ae9a644a0f2232e4 = $527acf6ebd7922fb$export$98e628dec113755e.map((ms)=>new Date(ms)).andThen((d)=>isNaN(d.getTime()) ? $527acf6ebd7922fb$export$2b62a06a9fee979c("invalid date") : $527acf6ebd7922fb$export$9094b7742a87955e(d));
+const $527acf6ebd7922fb$export$eb4d3bcbcf2cfbd9 = $527acf6ebd7922fb$export$22b082955e083ec3.map((s)=>new Date(s)).andThen((d)=>isNaN(d.getTime()) ? $527acf6ebd7922fb$export$2b62a06a9fee979c("invalid date") : $527acf6ebd7922fb$export$9094b7742a87955e(d));
 
 
 const $882b6d93070905b3$export$7feeb05a8babbb15 = $3b0fb3d685bd31ec$exports;
