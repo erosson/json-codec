@@ -1,3 +1,7 @@
+This project was a bad idea. Use io-ts instead! https://gcanti.github.io/io-ts/
+
+---
+
 # json-codec
 Elm-style JSON encoders and decoders for Typescript
 
